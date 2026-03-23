@@ -53,8 +53,10 @@ ST_API_TEST/
 ## COMMANDS
 
 ```bash
-python -m src                      # 전체 테스트
-python -m src devices              # 카테고리별 테스트
-python -m src -s                   # 부수효과 포함
-python -m src --no-log             # 로그 저장 안 함
+cd python
+uv sync                            # 의존성 설치 (최초 1회)
+uv run python -m src               # 전체 테스트
+uv run python -m src devices       # 카테고리별 테스트
+uv run python -m src -s            # 부수효과 포함
+uv run python -m src --no-log      # 로그 저장 안 함
 ```

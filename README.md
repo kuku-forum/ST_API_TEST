@@ -7,14 +7,14 @@
 ## 빠른 시작
 
 ```bash
-# Python 실행
-cd python && pip install -r requirements.txt && python -m src
+# Python 실행 (uv 사용)
+cd python && uv sync && uv run python -m src
 
 # Rust 실행
 cd rust && cargo run
 
 # 결과 비교
-python scripts/merge_logs.py
+uv run python scripts/merge_logs.py
 ```
 
 ## 사전 준비
@@ -50,10 +50,11 @@ cp .env.example .env
 
 ```bash
 cd python
-python -m src                    # 전체 테스트
-python -m src devices            # 카테고리별
-python -m src -s                 # 부수효과 포함 (기기 제어)
-python -m src --no-log           # 로그 저장 안 함
+uv sync                              # 의존성 설치 (최초 1회)
+uv run python -m src                 # 전체 테스트
+uv run python -m src devices         # 카테고리별
+uv run python -m src -s              # 부수효과 포함 (기기 제어)
+uv run python -m src --no-log        # 로그 저장 안 함
 ```
 
 ### Rust
@@ -70,14 +71,14 @@ cargo run -- --no-log            # 로그 저장 안 함
 
 ```bash
 # latest 로그 비교 (Python vs Rust)
-python scripts/merge_logs.py
+uv run python scripts/merge_logs.py
 
 # 결과 파일로 저장
-python scripts/merge_logs.py --save
+uv run python scripts/merge_logs.py --save
 
 # 특정 로그 파일 비교
-python scripts/merge_logs.py --py python/logs/2026-03-22_12-00-00.json \
-                             --rs rust/logs/2026-03-22_12-00-00.json
+uv run python scripts/merge_logs.py --py python/logs/2026-03-22_12-00-00.json \
+                                    --rs rust/logs/2026-03-22_12-00-00.json
 ```
 
 ## API 카테고리 (15개, 29개 엔드포인트)
