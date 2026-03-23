@@ -10,3 +10,5 @@ python/logs/
 rust/logs/
 rust/target/
 scripts/merged/
+
+.vscode/
