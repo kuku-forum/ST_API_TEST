@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from tools.base import BaseTool, ToolResult
-from tools.schemas.my_devices import AcControlInput
+from ..base import BaseTool, ToolResult
+from ..schemas.my_devices import AcControlInput
 
 
 class AcControlTool(BaseTool):

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from tools.base import BaseTool, ToolResult
-from tools.schemas.common import (
+from .base import BaseTool, ToolResult
+from .schemas.common import (
     ExecuteSceneInput,
     GetDeviceStatusInput,
     GetWeatherInput,

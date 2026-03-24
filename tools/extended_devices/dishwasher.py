@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from tools.base import BaseTool, ToolResult
-from tools.schemas.extended_devices import DishwasherInput
+from ..base import BaseTool, ToolResult
+from ..schemas.extended_devices import DishwasherInput
 
 
 class DishwasherTool(BaseTool):

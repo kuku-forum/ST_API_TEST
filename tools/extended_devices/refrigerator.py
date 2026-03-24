@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from tools.base import BaseTool, ToolResult
-from tools.schemas.extended_devices import RefrigeratorInput
+from ..base import BaseTool, ToolResult
+from ..schemas.extended_devices import RefrigeratorInput
 
 
 class RefrigeratorTool(BaseTool):

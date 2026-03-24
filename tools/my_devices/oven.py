@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from tools.base import BaseTool, ToolResult
-from tools.schemas.common import GetDeviceStatusInput
+from ..base import BaseTool, ToolResult
+from ..schemas.common import GetDeviceStatusInput
 
 
 class OvenStatusTool(BaseTool):
