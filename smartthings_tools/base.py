@@ -7,10 +7,10 @@ LLM agent의 tool calling을 위한 추상 기반 클래스와 결과 타입을 
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass
 from typing import Any, ClassVar
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 
 
 @dataclass
@@ -96,12 +96,9 @@ class BaseTool(ABC):
         """
         try:
             validated = self.args_schema.model_validate(raw_args)
-        except Exception as e:
+        except ValidationError as e:
             return ToolResult(success=False, error=f"ValidationError: {e}")
-        try:
-            return self.execute(**validated.model_dump())
-        except TypeError:
-            return self.execute(validated)
+        return self.execute(**validated.model_dump())
 
     def to_function_schema(self) -> dict[str, Any]:
         """범용 function schema. OpenAI/Anthropic 공통 기반.
