@@ -72,59 +72,314 @@ for block in response.content:
         result = toolkit.execute(block.name, **block.input)
 ```
 
-## 5. 도구 목록 (Tool Reference)
+## 5. 테스트 (Testing)
+
+```bash
+# 자동 샘플 테스트 — 디바이스 조회, 센서 읽기, 날씨 등 자동 수행
+uv run python smartthings_tools/examples/quick_test.py
+
+# 수동 대화형 테스트 — 도구 선택 → 파라미터 입력 → 실행
+uv run python smartthings_tools/examples/interactive.py
+
+# 통합 테스트 — 38개 도구 등록/스키마/API 호출 검증
+uv run python smartthings_tools/examples/test_my_devices.py
+```
+
+## 6. 도구 목록 (Tool Reference)
+
+> 파라미터 표기법: **필수**는 그대로, **선택**은 `(선택)` 표시.
+> 타입이 `"on" | "off"` 처럼 표기된 것은 해당 문자열만 허용하는 Literal 타입.
 
 ### 공통 도구 (5개)
-| 도구 이름 | 설명 | 주요 파라미터 |
-|-----------|------|-------------|
-| list_devices | 디바이스 목록 조회 | location_id?, capability? |
-| get_device_status | 디바이스 상태 조회 | device_id |
-| send_command | 범용 커맨드 전송 | device_id, capability, command, arguments |
-| execute_scene | 씬 실행 | scene_id |
-| get_weather | 날씨 조회 | location_id |
+
+**list_devices** — 등록된 모든 디바이스 목록 조회
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| location_id | str | 선택 | 특정 위치의 디바이스만 필터링 |
+| capability | str | 선택 | 특정 capability를 가진 디바이스만 필터링 |
+
+**get_device_status** — 특정 디바이스의 현재 상태 조회
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+
+**send_command** — 범용 커맨드 전송 (다른 도구로 해결 안 될 때 사용)
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| capability | str | 필수 | capability 이름 (예: `"switch"`, `"switchLevel"`) |
+| command | str | 필수 | 명령 이름 (예: `"on"`, `"setLevel"`) |
+| arguments | list | 선택 | 명령 인자 (예: `[75]`). 기본값 `[]` |
+| component | str | 선택 | 컴포넌트 이름. 기본값 `"main"` |
+
+**execute_scene** — 등록된 씬 실행
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| scene_id | str | 필수 | 씬 UUID |
+
+**get_weather** — 현재 위치의 날씨 조회
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| location_id | str | 필수 | SmartThings 위치 UUID |
+
+---
 
 ### 사용자 디바이스 도구 (19개)
-| 도구 이름 | 설명 | 주요 파라미터 |
-|-----------|------|-------------|
-| switch_power | 전원 on/off | device_id, state |
-| set_brightness | 밝기 설정 | device_id, level (0-100) |
-| set_color | 색상 변경 | device_id, hue, saturation |
-| set_color_temperature | 색온도 변경 | device_id, temperature (2700-6500K) |
-| control_curtain | 커튼 제어 | device_id, action, level? |
-| tv_power | TV 전원 | device_id, state |
-| tv_volume | TV 볼륨 | device_id, action, volume? |
-| tv_mute | TV 음소거 | device_id, state |
-| tv_channel | TV 채널 | device_id, action, channel? |
-| tv_input | TV 입력소스 | device_id, source |
-| media_playback | 미디어 재생 제어 | device_id, action |
-| media_volume | 미디어 볼륨 | device_id, action, volume? |
-| ac_control | 에어컨 제어 | device_id, power?, mode?, temperature?, wind_level? |
-| air_purifier_control | 공기청정기 제어 | device_id, power?, mode? |
-| dehumidifier_control | 제습기 제어 | device_id, power?, mode?, target_humidity? |
-| oven_status | 오븐 상태 조회 | device_id |
-| get_sensor_data | 센서 데이터 조회 | device_id |
-| get_energy_data | 전력 사용량 조회 | device_id |
-| get_battery_status | 배터리 잔량 조회 | device_id |
+
+**switch_power** — 디바이스 전원 on/off
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| state | `"on"` \| `"off"` | 필수 | 전원 상태 |
+
+**set_brightness** — 조명 밝기 설정
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| level | int (0~100) | 필수 | 밝기 퍼센트 |
+
+**set_color** — 조명 색상 변경
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| hue | int (0~100) | 필수 | 색조 |
+| saturation | int (0~100) | 필수 | 채도 |
+
+**set_color_temperature** — 조명 색온도 변경
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| temperature | int (2700~6500) | 필수 | 색온도 (K). 2700=따뜻한 노란색, 6500=차가운 흰색 |
+
+**control_curtain** — 커튼/블라인드 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"open"` \| `"close"` \| `"pause"` | 필수 | 동작 |
+| level | int (0~100) | 선택 | 커튼 위치 (0=완전 닫힘, 100=완전 열림) |
+
+**tv_power** — TV 전원
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | TV 디바이스 UUID |
+| state | `"on"` \| `"off"` | 필수 | 전원 상태 |
+
+**tv_volume** — TV 볼륨 조절
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | TV 디바이스 UUID |
+| action | `"set"` \| `"up"` \| `"down"` | 필수 | 볼륨 동작 |
+| volume | int (0~100) | 선택 | action이 `"set"`일 때 목표 볼륨 |
+
+**tv_mute** — TV 음소거
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | TV 디바이스 UUID |
+| state | `"mute"` \| `"unmute"` | 필수 | 음소거 상태 |
+
+**tv_channel** — TV 채널 변경
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | TV 디바이스 UUID |
+| action | `"set"` \| `"up"` \| `"down"` | 필수 | 채널 동작 |
+| channel | str | 선택 | action이 `"set"`일 때 채널 번호 |
+
+**tv_input** — TV 입력소스 변경
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | TV 디바이스 UUID |
+| source | str | 필수 | 입력소스 (예: `"HDMI1"`, `"HDMI2"`, `"USB"`, `"digitalTv"`) |
+
+**media_playback** — 미디어 재생 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"play"` \| `"pause"` \| `"stop"` \| `"fastForward"` \| `"rewind"` | 필수 | 재생 동작 |
+
+**media_volume** — 미디어 디바이스 볼륨 조절
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"set"` \| `"up"` \| `"down"` | 필수 | 볼륨 동작 |
+| volume | int (0~100) | 선택 | action이 `"set"`일 때 목표 볼륨 |
+
+**ac_control** — 에어컨 제어 (전원, 모드, 온도, 풍량)
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| power | `"on"` \| `"off"` | 선택 | 전원 |
+| mode | str | 선택 | 운전 모드 (예: `"cool"`, `"heat"`, `"auto"`, `"dry"`) |
+| temperature | float | 선택 | 목표 온도 (°C) |
+| wind_level | int | 선택 | 풍량 단계 |
+
+**air_purifier_control** — 공기청정기 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| power | `"on"` \| `"off"` | 선택 | 전원 |
+| mode | str | 선택 | 운전 모드 |
+
+**dehumidifier_control** — 제습기 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| power | `"on"` \| `"off"` | 선택 | 전원 |
+| mode | str | 선택 | 운전 모드 |
+| target_humidity | int (30~70) | 선택 | 목표 습도 (%) |
+
+**oven_status** — 오븐/쿠커 상태 조회 (읽기 전용)
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+
+**get_sensor_data** — 센서 측정값 조회 (온도, 습도, 조도, 모션, 재실 등)
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 센서 디바이스 UUID |
+
+**get_energy_data** — 스마트플러그 전력 사용량 조회
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 플러그 디바이스 UUID |
+
+**get_battery_status** — 배터리 잔량 확인
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 배터리 구동 디바이스 UUID |
+
+---
 
 ### 확장 디바이스 도구 (14개)
-| 도구 이름 | 설명 | 주요 파라미터 |
-|-----------|------|-------------|
-| robot_vacuum_control | 로봇청소기 제어 | device_id, action, cleaning_mode?, turbo? |
-| door_lock_control | 도어록 제어 | device_id, action |
-| washer_control | 세탁기 제어 | device_id, action, mode? |
-| dryer_control | 건조기 제어 | device_id, action, mode? |
-| dishwasher_control | 식기세척기 제어 | device_id, action, mode? |
-| refrigerator_control | 냉장고 제어 | device_id, feature, state |
-| thermostat_control | 온도조절기 제어 | device_id, mode?, heating_setpoint?, cooling_setpoint?, fan_mode? |
-| alarm_control | 경보 제어 | device_id, action |
-| security_system_control | 보안시스템 제어 | device_id, action |
-| garage_door_control | 차고문 제어 | device_id, action |
-| valve_control | 밸브 제어 | device_id, action |
-| smoke_detector_status | 화재감지 상태 조회 | device_id |
-| co_detector_status | CO 감지 상태 조회 | device_id |
-| water_leak_status | 누수 감지 상태 조회 | device_id |
 
-## 6. 아키텍처 (Architecture)
+**robot_vacuum_control** — 로봇청소기 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"start"` \| `"pause"` \| `"returnToHome"` | 필수 | 동작 |
+| cleaning_mode | str | 선택 | 청소 모드 (예: `"auto"`, `"part"`, `"repeat"`) |
+| turbo | `"on"` \| `"off"` \| `"silence"` | 선택 | 터보 모드 |
+
+**door_lock_control** — 스마트 도어록
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"lock"` \| `"unlock"` | 필수 | 잠금/해제 |
+
+**washer_control** — 세탁기 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"run"` \| `"pause"` \| `"stop"` | 필수 | 동작 |
+| mode | str | 선택 | 세탁 모드 (예: `"regular"`, `"heavy"`, `"rinse"`) |
+
+**dryer_control** — 건조기 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"run"` \| `"pause"` \| `"stop"` | 필수 | 동작 |
+| mode | str | 선택 | 건조 모드 (예: `"regular"`, `"lowHeat"`, `"highHeat"`) |
+
+**dishwasher_control** — 식기세척기 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"run"` \| `"pause"` \| `"stop"` | 필수 | 동작 |
+| mode | str | 선택 | 세척 모드 (예: `"auto"`, `"eco"`, `"intense"`, `"quick"`) |
+
+**refrigerator_control** — 냉장고 기능 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| feature | `"rapidCooling"` \| `"rapidFreezing"` \| `"defrost"` | 필수 | 기능 |
+| state | `"on"` \| `"off"` | 필수 | 활성화 여부 |
+
+**thermostat_control** — 온도조절기/보일러 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| mode | str | 선택 | 운전 모드 (예: `"auto"`, `"cool"`, `"heat"`, `"off"`) |
+| heating_setpoint | float | 선택 | 난방 목표 온도 (°C) |
+| cooling_setpoint | float | 선택 | 냉방 목표 온도 (°C) |
+| fan_mode | str | 선택 | 팬 모드 (예: `"auto"`, `"on"`, `"circulate"`) |
+
+**alarm_control** — 사이렌/경보 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"siren"` \| `"strobe"` \| `"both"` \| `"off"` | 필수 | 경보 동작 |
+
+**security_system_control** — 보안 시스템 경계 모드
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"armAway"` \| `"armStay"` \| `"disarm"` | 필수 | 보안 모드 |
+
+**garage_door_control** — 차고문 제어
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"open"` \| `"close"` | 필수 | 동작 |
+
+**valve_control** — 스마트 밸브 (수도 차단 등)
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+| action | `"open"` \| `"close"` | 필수 | 동작 |
+
+**smoke_detector_status** — 화재 감지기 상태 조회 (읽기 전용)
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+
+**co_detector_status** — 일산화탄소 감지기 상태 조회 (읽기 전용)
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+
+**water_leak_status** — 누수 감지 센서 상태 조회 (읽기 전용)
+
+| 파라미터 | 타입 | 필수 | 설명 |
+|----------|------|------|------|
+| device_id | str | 필수 | 디바이스 UUID |
+
+## 7. 아키텍처 (Architecture)
 ```
 smartthings_tools/
 ├── __init__.py              # SmartThingsToolkit (진입점)
@@ -151,7 +406,7 @@ smartthings_tools/
     └── test_my_devices.py   # 테스트 스크립트
 ```
 
-## 7. 커스텀 도구 추가 (Adding Custom Tools)
+## 8. 커스텀 도구 추가 (Adding Custom Tools)
 도구를 확장하는 방법은 다음과 같습니다.
 ```python
 from pydantic import BaseModel, Field
@@ -174,7 +429,7 @@ class MyCustomTool(BaseTool):
         return ToolResult(success=True, data=data)
 ```
 
-## 8. SmartThings API 참조 (API Reference)
+## 9. SmartThings API 참조 (API Reference)
 - Base URL: https://api.smartthings.com/v1
 - Auth: Bearer {PAT Token}
 - PAT 발급: https://account.smartthings.com/tokens
@@ -185,5 +440,5 @@ class MyCustomTool(BaseTool):
   - thermostatMode: setThermostatMode
   - airConditionerMode: setAirConditionerMode
 
-## 9. 라이선스 (License)
+## 10. 라이선스 (License)
 ST_API_TEST 프로젝트의 일부입니다.
