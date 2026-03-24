@@ -5,8 +5,8 @@ Python/Rust 테스트 로그 병합 및 비교 도구.
 사용법:
     python scripts/merge_logs.py                  # latest.json 비교
     python scripts/merge_logs.py --save           # 결과를 scripts/merged/ 에 저장
-    python scripts/merge_logs.py --py python/logs/2026-01-01_00-00-00.json \
-                                 --rs rust/logs/2026-01-01_00-00-00.json
+    python scripts/merge_logs.py --py api_explorer/logs/2026-01-01_00-00-00.json \
+                                 --rs api_explorer_rs/logs/2026-01-01_00-00-00.json
 """
 
 from __future__ import annotations
@@ -18,8 +18,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PY_LATEST = ROOT / "python" / "logs" / "latest.json"
-RS_LATEST = ROOT / "rust" / "logs" / "latest.json"
+PY_LATEST = ROOT / "api_explorer" / "logs" / "latest.json"
+RS_LATEST = ROOT / "api_explorer_rs" / "logs" / "latest.json"
 MERGED_DIR = ROOT / "scripts" / "merged"
 
 R = "\033[0m"
@@ -203,7 +203,7 @@ def main() -> None:
             file=sys.stderr,
         )
         print(
-            f"  \uba3c\uc800 \uc2e4\ud589: cd python && python -m src", file=sys.stderr
+            f"  \uba3c\uc800 \uc2e4\ud589: uv run python -m api_explorer", file=sys.stderr
         )
         sys.exit(1)
 
@@ -212,7 +212,7 @@ def main() -> None:
             f"  {RED}\u274c Rust \ub85c\uadf8\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4: {args.rs}{R}",
             file=sys.stderr,
         )
-        print(f"  \uba3c\uc800 \uc2e4\ud589: cd rust && cargo run", file=sys.stderr)
+        print(f"  \uba3c\uc800 \uc2e4\ud589: cd api_explorer_rs && cargo run", file=sys.stderr)
         sys.exit(1)
 
     merged = print_comparison(py_data, rs_data)

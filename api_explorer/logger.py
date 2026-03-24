@@ -7,7 +7,7 @@ from pathlib import Path
 
 from .models import TestSuiteResult
 
-LOGS_DIR = Path(__file__).resolve().parent.parent / "logs"
+LOGS_DIR = Path(__file__).resolve().parent / "logs"
 
 
 def save_log(suite: TestSuiteResult) -> str:

@@ -6,9 +6,9 @@ __pycache__/
 .DS_Store
 .ruff_cache/
 
-python/logs/
-rust/logs/
-rust/target/
+api_explorer/logs/
+api_explorer_rs/logs/
+api_explorer_rs/target/
 scripts/merged/
 
 .vscode/

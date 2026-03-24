@@ -6,8 +6,7 @@
 
 사용법::
 
-    # 프로젝트 루트에서 실행
-    PYTHONPATH=. python tools/examples/test_my_devices.py
+    uv run python smartthings_tools/examples/test_my_devices.py
 """
 
 from __future__ import annotations
@@ -15,16 +14,12 @@ from __future__ import annotations
 import json
 import os
 import sys
-from pathlib import Path
 
-project_root = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(project_root))
+from dotenv import find_dotenv, load_dotenv
 
-from dotenv import load_dotenv
+load_dotenv(find_dotenv())
 
-load_dotenv(project_root / ".env")
-
-from tools import SmartThingsToolkit, ToolResult
+from smartthings_tools import SmartThingsToolkit, ToolResult
 
 PASS = "\033[92mPASS\033[0m"
 FAIL = "\033[91mFAIL\033[0m"
@@ -148,7 +143,7 @@ def main() -> None:
 
     loc_result = toolkit.execute("list_devices")
     if loc_result.success and loc_result.data:
-        from tools.client import SmartThingsClient
+        from smartthings_tools.client import SmartThingsClient
 
         client = SmartThingsClient(token)
         loc_data = client.get("/locations")

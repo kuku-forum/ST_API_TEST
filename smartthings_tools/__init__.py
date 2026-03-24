@@ -6,7 +6,7 @@ Pydantic BaseModel 기반 스키마 + class 기반 도구 구조.
 
 사용 예시::
 
-    from tools import SmartThingsToolkit
+    from smartthings_tools import SmartThingsToolkit
 
     toolkit = SmartThingsToolkit(token="your-pat-token")
 
