@@ -9,6 +9,10 @@ __pycache__/
 api_explorer/logs/
 api_explorer_rs/logs/
 api_explorer_rs/target/
+smartthings_tools_rs/target/
 scripts/merged/
 
 .vscode/
+
+memo.md
+memo_agent.md
